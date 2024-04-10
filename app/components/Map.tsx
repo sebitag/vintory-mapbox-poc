@@ -1,13 +1,16 @@
 'use client';
 
 import React from 'react';
-import { Map as Mapbox, ScaleControl, useMap } from 'react-map-gl';
+import { Map as Mapbox, Marker, ScaleControl, useMap } from 'react-map-gl';
+import Pin from './Pin';
 
 const accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
 
-type MapProps = {};
+type MapProps = {
+  showMarker?: boolean;
+};
 
-const Map: React.FC<MapProps> = ({}) => {
+const Map: React.FC<MapProps> = ({ showMarker }) => {
   return (
     <Mapbox
       id="mapbox"
@@ -27,6 +30,12 @@ const Map: React.FC<MapProps> = ({}) => {
       }}
       mapStyle="mapbox://styles/mapbox/streets-v9"
     >
+      {showMarker && (
+        <Marker longitude={-122.4} latitude={37.8}>
+          <Pin />
+        </Marker>
+      )}
+
       <ScaleControl />
     </Mapbox>
   );

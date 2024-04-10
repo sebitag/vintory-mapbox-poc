@@ -16,6 +16,11 @@ const Page = () => {
 
 function Home() {
   const { mapbox } = useMap();
+  const [showMarker, setShowMarker] = React.useState(false);
+
+  const handleShowMarker = () => {
+    setShowMarker(!showMarker);
+  };
 
   const handleZoomIn = () => {
     mapbox?.setZoom(mapbox.getZoom() + 1);
@@ -72,13 +77,16 @@ function Home() {
           </div>
           <div>
             <textarea></textarea>
+            <button>Submit</button>
           </div>
           <div>
-            <button>Submit</button>
+            <button onClick={handleShowMarker}>
+              {showMarker ? 'Hide markers' : 'Show markers'}
+            </button>
           </div>
         </div>
       </div>
-      <Map />
+      <Map showMarker={showMarker} />
     </div>
   );
 }

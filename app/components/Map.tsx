@@ -1,16 +1,15 @@
-"use client";
+'use client';
 
-import React from "react";
-import {
-  FullscreenControl,
-  Map as Mapbox,
-  NavigationControl,
-  ScaleControl,
-} from "react-map-gl";
+import React from 'react';
+import { Map as Mapbox, ScaleControl } from 'react-map-gl';
 
 const accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
 
-const Map: React.FC = () => {
+type MapProps = {
+  zoom?: number;
+};
+
+const Map: React.FC<MapProps> = ({ zoom = 15 }) => {
   return (
     <Mapbox
       mapboxAccessToken={accessToken}
@@ -21,11 +20,15 @@ const Map: React.FC = () => {
         bearing: 0,
         pitch: 0,
       }}
-      style={{ width: "100vw", height: "100vh" }}
+      zoom={zoom}
+      style={{
+        width: '100vw',
+        height: '100vh',
+        position: 'absolute',
+        zIndex: 100,
+      }}
       mapStyle="mapbox://styles/mapbox/streets-v9"
     >
-      <FullscreenControl position="top-left" />
-      <NavigationControl position="top-left" />
       <ScaleControl />
     </Mapbox>
   );

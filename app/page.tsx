@@ -2,17 +2,29 @@
 
 import * as React from 'react';
 import Map from './components/Map';
-import { useMap } from 'react-map-gl';
+import { MapProvider, useMap } from 'react-map-gl';
 
-export default function Home() {
+const Page = () => {
+  return (
+    <div>
+      <MapProvider>
+        <Home />
+      </MapProvider>
+    </div>
+  );
+};
+
+function Home() {
   const [zoom, setZoom] = React.useState(15);
+  const { mapbox } = useMap();
 
   const handleZoomIn = () => {
-    setZoom(zoom + 1);
+    console.log('zoom in', mapbox);
+    mapbox?.setZoom(mapbox.getZoom() + 1);
   };
 
   const handleZoomOut = () => {
-    setZoom(zoom - 1);
+    mapbox?.setZoom(0);
   };
 
   return (
@@ -50,7 +62,9 @@ export default function Home() {
           <button onClick={handleZoomOut}> - </button>
         </div>
       </div>
-      <Map zoom={zoom} />
+      <Map zoom={zoom} setZoom={setZoom} />
     </div>
   );
 }
+
+export default Page;

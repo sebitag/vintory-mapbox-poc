@@ -11,6 +11,16 @@ type MapProps = {
 };
 
 const Map: React.FC<MapProps> = ({ showMarker }) => {
+  const [markers, setMarkers] = React.useState([
+    { longitude: -122.4, latitude: 37.8 },
+  ]);
+
+  const handleClick = (e: mapboxgl.MapLayerMouseEvent) =>
+    setMarkers((markers) => [
+      ...markers,
+      { longitude: e.lngLat.lng, latitude: e.lngLat.lat },
+    ]);
+
   return (
     <Mapbox
       id="mapbox"
@@ -29,11 +39,20 @@ const Map: React.FC<MapProps> = ({ showMarker }) => {
         zIndex: 100,
       }}
       mapStyle="mapbox://styles/mapbox/streets-v9"
+      onClick={handleClick}
     >
       {showMarker && (
-        <Marker longitude={-122.4} latitude={37.8}>
-          <Pin />
-        </Marker>
+        <>
+          {markers.map((marker, index) => (
+            <Marker
+              key={index}
+              longitude={marker.longitude}
+              latitude={marker.latitude}
+            >
+              <Pin />
+            </Marker>
+          ))}
+        </>
       )}
 
       <ScaleControl />

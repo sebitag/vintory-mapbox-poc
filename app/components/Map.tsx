@@ -19,16 +19,6 @@ const Map: React.FC<MapProps> = ({}) => {
         bearing: 0,
         pitch: 0,
       }}
-      // zoom={zoom}
-      // onWheel={(e) => {
-      //   e.preventDefault();
-
-      //   if (e.originalEvent.deltaY < 0) {
-      //     setZoom(zoom + 0.05);
-      //   } else {
-      //     setZoom(zoom - 0.05);
-      //   }
-      // }}
       style={{
         width: '100vw',
         height: '100vh',

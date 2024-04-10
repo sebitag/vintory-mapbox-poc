@@ -15,16 +15,14 @@ const Page = () => {
 };
 
 function Home() {
-  const [zoom, setZoom] = React.useState(15);
   const { mapbox } = useMap();
 
   const handleZoomIn = () => {
-    console.log('zoom in', mapbox);
     mapbox?.setZoom(mapbox.getZoom() + 1);
   };
 
   const handleZoomOut = () => {
-    mapbox?.setZoom(0);
+    mapbox?.setZoom(mapbox.getZoom() - 1);
   };
 
   return (
@@ -52,17 +50,35 @@ function Home() {
         <div
           style={{
             zIndex: 101,
+            backgroundColor: 'rgba(255,255,255)',
             display: 'flex',
-            justifyContent: 'flex-end',
-            alignContent: 'flex-end',
-            padding: 20,
+            flexDirection: 'column',
+            alignSelf: 'flex-end',
+            padding: 10,
+            marginTop: 40,
+            marginRight: 10,
+
+            width: '30%',
+            maxWidth: 200,
+            height: '30%',
+            borderRadius: 10,
+
+            alignContent: 'center',
           }}
         >
-          <button onClick={handleZoomIn}> + </button>
-          <button onClick={handleZoomOut}> - </button>
+          <div>
+            <button onClick={handleZoomIn}> + </button>
+            <button onClick={handleZoomOut}> - </button>
+          </div>
+          <div>
+            <textarea></textarea>
+          </div>
+          <div>
+            <button>Submit</button>
+          </div>
         </div>
       </div>
-      <Map zoom={zoom} setZoom={setZoom} />
+      <Map />
     </div>
   );
 }

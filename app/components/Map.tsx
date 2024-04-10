@@ -5,12 +5,9 @@ import { Map as Mapbox, ScaleControl, useMap } from 'react-map-gl';
 
 const accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
 
-type MapProps = {
-  zoom?: number;
-  setZoom: React.Dispatch<React.SetStateAction<number>>;
-};
+type MapProps = {};
 
-const Map: React.FC<MapProps> = ({ zoom = 15, setZoom }) => {
+const Map: React.FC<MapProps> = ({}) => {
   return (
     <Mapbox
       id="mapbox"

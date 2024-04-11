@@ -62,9 +62,15 @@ type MapProps = {
   geoJson?: string;
   showMarker?: boolean;
   showClusters?: boolean;
+  clusterCustomMarkers?: boolean;
 };
 
-const Map: React.FC<MapProps> = ({ showMarker, showClusters, geoJson }) => {
+const Map: React.FC<MapProps> = ({
+  showMarker,
+  showClusters,
+  geoJson,
+  clusterCustomMarkers,
+}) => {
   const [markers, setMarkers] = React.useState([
     { longitude: -122.4, latitude: 37.8, id: 1 },
   ]);
@@ -100,8 +106,11 @@ const Map: React.FC<MapProps> = ({ showMarker, showClusters, geoJson }) => {
     [markers]
   );
 
+  const [zoomLevel, setZoomLevel] = React.useState(14);
+
   return (
     <Mapbox
+      onZoom={(e) => setZoomLevel(e.target.getZoom())}
       id="mapbox"
       mapboxAccessToken={accessToken}
       initialViewState={{
@@ -166,6 +175,70 @@ const Map: React.FC<MapProps> = ({ showMarker, showClusters, geoJson }) => {
           </Source>
         </>
       )}
+
+      {clusterCustomMarkers && (
+        <Source
+          id="makersSource"
+          type="geojson"
+          cluster={true}
+          clusterMaxZoom={14}
+          clusterRadius={50}
+          data={{
+            type: 'FeatureCollection',
+            features: markersFeatures as Feature[],
+          }}
+        >
+          <Layer
+            id="clusters"
+            type="circle"
+            source="makersSource"
+            filter={['has', 'point_count']}
+            paint={{
+              'circle-color': [
+                'step',
+                ['get', 'point_count'],
+                '#51bbd6',
+                100,
+                '#f1f075',
+                750,
+                '#f28cb1',
+              ],
+              'circle-radius': [
+                'step',
+                ['get', 'point_count'],
+                20,
+                100,
+                30,
+                750,
+                40,
+              ],
+            }}
+          />
+
+          {zoomLevel > 14 &&
+            markers.map((marker, index) => (
+              <Marker
+                key={index}
+                longitude={marker.longitude}
+                latitude={marker.latitude}
+                onClick={(e) => {
+                  e.originalEvent.stopPropagation();
+                  deleteMarker(marker.id);
+                }}
+              >
+                <Pin />
+              </Marker>
+            ))}
+        </Source>
+      )}
+
+      {/* 
+            We need to use something like the code above to mix the markers and the clusters.
+
+            I think we can use supercluster library too for cluster the markers for example.
+            https://github.dev/jamalx31/mapbox-supercluster-example/tree/master/src
+            https://github.com/mapbox/supercluster
+      */}
 
       <ScaleControl />
     </Mapbox>

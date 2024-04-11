@@ -18,7 +18,9 @@ const Page = () => {
 function Home() {
   const { mapbox } = useMap();
   const [showMarker, setShowMarker] = React.useState(true);
-  const [showClusters, setShowClusters] = React.useState(true);
+  const [showClusters, setShowClusters] = React.useState(false);
+  const [showClusterCustomMarkers, setShowClusterCustomMarkers] =
+    React.useState(false);
 
   const handleShowMarker = () => {
     setShowMarker(!showMarker);
@@ -93,12 +95,28 @@ function Home() {
               {showClusters ? 'Hide clusters' : 'Show clusters'}
             </button>
           </div>
+          <div>
+            <p className={styles.funcTitle}>Clusters with custom markers</p>
+            <button
+              className={styles.buttonWhite}
+              onClick={() =>
+                setShowClusterCustomMarkers(
+                  (showClusterCustomMarkers) => !showClusterCustomMarkers
+                )
+              }
+            >
+              {showClusterCustomMarkers
+                ? 'Hide cluster-marker'
+                : 'Show cluster-marker'}
+            </button>
+          </div>
         </div>
       </div>
       <Map
         showMarker={showMarker}
         showClusters={showClusters}
         geoJson={geoJson}
+        clusterCustomMarkers={showClusterCustomMarkers}
       />
     </div>
   );

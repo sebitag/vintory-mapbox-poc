@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import React, { useMemo } from "react";
+import React, { useMemo } from 'react';
 import {
   Layer,
   Map as Mapbox,
@@ -8,51 +8,52 @@ import {
   ScaleControl,
   Source,
   useMap,
-} from "react-map-gl";
-import Pin from "./Pin";
-import type { LayerProps } from "react-map-gl";
+} from 'react-map-gl';
+import Pin from './Pin';
+import type { LayerProps } from 'react-map-gl';
+import { Feature } from 'geojson';
 
 export const clusterLayer: LayerProps = {
-  id: "clusters",
-  type: "circle",
-  source: "earthquakes",
-  filter: ["has", "point_count"],
+  id: 'clusters',
+  type: 'circle',
+  source: 'earthquakes',
+  filter: ['has', 'point_count'],
   paint: {
-    "circle-color": [
-      "step",
-      ["get", "point_count"],
-      "#51bbd6",
+    'circle-color': [
+      'step',
+      ['get', 'point_count'],
+      '#51bbd6',
       100,
-      "#f1f075",
+      '#f1f075',
       750,
-      "#f28cb1",
+      '#f28cb1',
     ],
-    "circle-radius": ["step", ["get", "point_count"], 20, 100, 30, 750, 40],
+    'circle-radius': ['step', ['get', 'point_count'], 20, 100, 30, 750, 40],
   },
 };
 
 export const clusterCountLayer: LayerProps = {
-  id: "cluster-count",
-  type: "symbol",
-  source: "earthquakes",
-  filter: ["has", "point_count"],
+  id: 'cluster-count',
+  type: 'symbol',
+  source: 'earthquakes',
+  filter: ['has', 'point_count'],
   layout: {
-    "text-field": "{point_count_abbreviated}",
-    "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
-    "text-size": 12,
+    'text-field': '{point_count_abbreviated}',
+    'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+    'text-size': 12,
   },
 };
 
 export const unclusteredPointLayer: LayerProps = {
-  id: "unclustered-point",
-  type: "circle",
-  source: "earthquakes",
-  filter: ["!", ["has", "point_count"]],
+  id: 'unclustered-point',
+  type: 'circle',
+  source: 'earthquakes',
+  filter: ['!', ['has', 'point_count']],
   paint: {
-    "circle-color": "red",
-    "circle-radius": 4,
-    "circle-stroke-width": 1,
-    "circle-stroke-color": "#fff",
+    'circle-color': 'red',
+    'circle-radius': 4,
+    'circle-stroke-width': 1,
+    'circle-stroke-color': '#fff',
   },
 };
 const accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
@@ -87,12 +88,12 @@ const Map: React.FC<MapProps> = ({ showMarker, showClusters, geoJson }) => {
   const markersFeatures = useMemo(
     () =>
       markers.map((marker) => ({
-        type: "Feature",
+        type: 'Feature',
         properties: {
           mag: 3,
         },
         geometry: {
-          type: "Point",
+          type: 'Point',
           coordinates: [marker.longitude, marker.latitude],
         },
       })),
@@ -111,9 +112,9 @@ const Map: React.FC<MapProps> = ({ showMarker, showClusters, geoJson }) => {
         pitch: 0,
       }}
       style={{
-        width: "100vw",
-        height: "100vh",
-        position: "absolute",
+        width: '100vw',
+        height: '100vh',
+        position: 'absolute',
         zIndex: 100,
       }}
       mapStyle="mapbox://styles/mapbox/streets-v9"
@@ -124,7 +125,7 @@ const Map: React.FC<MapProps> = ({ showMarker, showClusters, geoJson }) => {
           <Layer
             id="data"
             type="fill"
-            paint={{ "fill-color": "#088", "fill-opacity": 0.8 }}
+            paint={{ 'fill-color': '#088', 'fill-opacity': 0.8 }}
           />
         </Source>
       )}
@@ -152,8 +153,8 @@ const Map: React.FC<MapProps> = ({ showMarker, showClusters, geoJson }) => {
             id="markersFeatures"
             type="geojson"
             data={{
-              type: "FeatureCollection",
-              features: markersFeatures,
+              type: 'FeatureCollection',
+              features: markersFeatures as Feature[],
             }}
             cluster={true}
             clusterMaxZoom={14}

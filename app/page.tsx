@@ -3,6 +3,7 @@
 import * as React from 'react';
 import Map from './components/Map';
 import { MapProvider, useMap } from 'react-map-gl';
+import styles from './page.module.css';
 
 const Page = () => {
   return (
@@ -16,6 +17,11 @@ const Page = () => {
 
 function Home() {
   const { mapbox } = useMap();
+  const [showMarker, setShowMarker] = React.useState(false);
+
+  const handleShowMarker = () => {
+    setShowMarker(!showMarker);
+  };
 
   const handleZoomIn = () => {
     mapbox?.setZoom(mapbox.getZoom() + 1);
@@ -50,13 +56,15 @@ function Home() {
         <div
           style={{
             zIndex: 101,
-            backgroundColor: 'rgba(255,255,255)',
+            backgroundColor: '#20314D',
             display: 'flex',
             flexDirection: 'column',
             alignSelf: 'flex-end',
             padding: 10,
             marginTop: 40,
             marginRight: 10,
+
+            gap: 20,
 
             width: '30%',
             maxWidth: 200,
@@ -67,18 +75,28 @@ function Home() {
           }}
         >
           <div>
-            <button onClick={handleZoomIn}> + </button>
-            <button onClick={handleZoomOut}> - </button>
+            <p className={styles.funcTitle}>Zoom</p>
+            <button className={styles.buttonWhite} onClick={handleZoomIn}>
+              +
+            </button>
+            <button className={styles.buttonWhite} onClick={handleZoomOut}>
+              -
+            </button>
           </div>
           <div>
+            <p className={styles.funcTitle}>GeoJson</p>
             <textarea></textarea>
+            <button className={styles.buttonWhite}>Submit</button>
           </div>
           <div>
-            <button>Submit</button>
+            <p className={styles.funcTitle}>Markers</p>
+            <button className={styles.buttonWhite} onClick={handleShowMarker}>
+              {showMarker ? 'Hide markers' : 'Show markers'}
+            </button>
           </div>
         </div>
       </div>
-      <Map />
+      <Map showMarker={showMarker} />
     </div>
   );
 }

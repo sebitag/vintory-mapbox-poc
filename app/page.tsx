@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import Map from './components/Map';
-import { MapProvider, useMap } from 'react-map-gl';
+import * as React from "react";
+import Map from "./components/Map";
+import { MapProvider, useMap } from "react-map-gl";
 
 const Page = () => {
   return (
@@ -25,23 +25,34 @@ function Home() {
     mapbox?.setZoom(mapbox.getZoom() - 1);
   };
 
+  const [inputValue, setInputValue] = React.useState("");
+  const [geoJson, setGeoJson] = React.useState<string | undefined>(undefined);
+  const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInputValue(event.target.value);
+  };
+
+  const handleSubmit = () => {
+    setGeoJson(inputValue);
+    setInputValue("");
+  };
+
   return (
     <div>
       <div
         style={{
-          position: 'absolute',
-          display: 'flex',
+          position: "absolute",
+          display: "flex",
           flex: 1,
-          width: '100vw',
-          height: '100vh',
-          flexDirection: 'column',
+          width: "100vw",
+          height: "100vh",
+          flexDirection: "column",
         }}
       >
         <div
           style={{
             zIndex: 101,
-            backgroundColor: 'rgba(255,255,255)',
-            boxShadow: '0px 10px 20px 10px rgba(255,255,255,1)',
+            backgroundColor: "rgba(255,255,255)",
+            boxShadow: "0px 10px 20px 10px rgba(255,255,255,1)",
             paddingLeft: 20,
           }}
         >
@@ -50,20 +61,20 @@ function Home() {
         <div
           style={{
             zIndex: 101,
-            backgroundColor: 'rgba(255,255,255)',
-            display: 'flex',
-            flexDirection: 'column',
-            alignSelf: 'flex-end',
+            backgroundColor: "rgba(255,255,255)",
+            display: "flex",
+            flexDirection: "column",
+            alignSelf: "flex-end",
             padding: 10,
             marginTop: 40,
             marginRight: 10,
 
-            width: '30%',
+            width: "30%",
             maxWidth: 200,
-            height: '30%',
+            height: "30%",
             borderRadius: 10,
 
-            alignContent: 'center',
+            alignContent: "center",
           }}
         >
           <div>
@@ -71,14 +82,17 @@ function Home() {
             <button onClick={handleZoomOut}> - </button>
           </div>
           <div>
-            <textarea></textarea>
+            <textarea
+              value={inputValue}
+              onChange={handleInputChange}
+            ></textarea>
           </div>
           <div>
-            <button>Submit</button>
+            <button onClick={handleSubmit}>Submit</button>
           </div>
         </div>
       </div>
-      <Map />
+      <Map geoJson={geoJson} />
     </div>
   );
 }

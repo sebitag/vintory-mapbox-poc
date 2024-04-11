@@ -12,14 +12,22 @@ type MapProps = {
 
 const Map: React.FC<MapProps> = ({ showMarker }) => {
   const [markers, setMarkers] = React.useState([
-    { longitude: -122.4, latitude: 37.8 },
+    { longitude: -122.4, latitude: 37.8, id: 1 },
   ]);
 
   const handleClick = (e: mapboxgl.MapLayerMouseEvent) =>
     setMarkers((markers) => [
       ...markers,
-      { longitude: e.lngLat.lng, latitude: e.lngLat.lat },
+      {
+        longitude: e.lngLat.lng,
+        latitude: e.lngLat.lat,
+        id: markers.length + 1,
+      },
     ]);
+
+  const deleteMarker = (id: number) => {
+    setMarkers((markers) => markers.filter((marker) => marker.id !== id));
+  };
 
   return (
     <Mapbox
@@ -48,6 +56,10 @@ const Map: React.FC<MapProps> = ({ showMarker }) => {
               key={index}
               longitude={marker.longitude}
               latitude={marker.latitude}
+              onClick={(e) => {
+                e.originalEvent.stopPropagation();
+                deleteMarker(marker.id);
+              }}
             >
               <Pin />
             </Marker>

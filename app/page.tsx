@@ -1,9 +1,10 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import Map from './components/Map';
-import { MapProvider, useMap } from 'react-map-gl';
-import styles from './page.module.css';
+import * as React from "react";
+import Map from "./components/Map";
+import { MapProvider, useMap } from "react-map-gl";
+import styles from "./page.module.css";
+import { polygon_examples } from "./polygon_example";
 
 const Page = () => {
   return (
@@ -34,27 +35,48 @@ function Home() {
     mapbox?.setZoom(mapbox.getZoom() - 1);
   };
 
-  const [inputValue, setInputValue] = React.useState('');
-  const [geoJson, setGeoJson] = React.useState<string | undefined>(undefined);
+  const [inputValue, setInputValue] = React.useState(
+    '{"type":"FeatureCollection","features":[]}'
+  );
+  const [geoJson, setGeoJson] = React.useState<any | undefined>(undefined);
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInputValue(event.target.value);
   };
 
-  const handleSubmit = () => {
-    setGeoJson(inputValue);
-    setInputValue('');
+  const handleSubmit = (input?: string) => {
+    try {
+      const parsedValue = JSON.parse(input ?? inputValue);
+      if (
+        Object.keys(parsedValue).length === 0 &&
+        parsedValue.type !== "FeatureCollection" &&
+        parsedValue.type !== "Feature"
+      ) {
+        throw new Error("Invalid GeoJson");
+      }
+      setGeoJson(
+        parsedValue.type === "Feature"
+          ? {
+              type: "FeatureCollection",
+              features: [parsedValue],
+            }
+          : parsedValue
+      );
+    } catch (e) {
+      alert("Invalid GeoJson");
+      return;
+    }
   };
 
   return (
     <div>
       <div
         style={{
-          position: 'absolute',
-          display: 'flex',
+          position: "absolute",
+          display: "flex",
           flex: 1,
-          width: '100vw',
-          height: '100vh',
-          flexDirection: 'column',
+          width: "100vw",
+          height: "100vh",
+          flexDirection: "column",
         }}
       >
         <div className={styles.header}>
@@ -70,20 +92,41 @@ function Home() {
               -
             </button>
           </div>
+
           <div>
             <p className={styles.funcTitle}>GeoJson</p>
+            <select
+              className={styles.select}
+              onChange={(event) => {
+                setInputValue(event.target.value);
+                handleSubmit(event.target.value);
+              }}
+            >
+              <option value='{"type":"FeatureCollection","features":[]}'>
+                Clean
+              </option>
+              {polygon_examples.map((example, index) => (
+                <option key={index} value={example}>
+                  Example {index + 1}
+                </option>
+              ))}
+            </select>
             <textarea
               value={inputValue}
               onChange={handleInputChange}
+              placeholder="Enter Feature or FeatureCollection here"
             ></textarea>
-            <button className={styles.buttonWhite} onClick={handleSubmit}>
+            <button
+              className={styles.buttonWhite}
+              onClick={() => handleSubmit()}
+            >
               Submit
             </button>
           </div>
           <div>
             <p className={styles.funcTitle}>Markers</p>
             <button className={styles.buttonWhite} onClick={handleShowMarker}>
-              {showMarker ? 'Hide markers' : 'Show markers'}
+              {showMarker ? "Hide markers" : "Show markers"}
             </button>
           </div>
           <div>
@@ -92,7 +135,7 @@ function Home() {
               className={styles.buttonWhite}
               onClick={() => setShowClusters((showClusters) => !showClusters)}
             >
-              {showClusters ? 'Hide clusters' : 'Show clusters'}
+              {showClusters ? "Hide clusters" : "Show clusters"}
             </button>
           </div>
           <div>
@@ -106,8 +149,8 @@ function Home() {
               }
             >
               {showClusterCustomMarkers
-                ? 'Hide cluster-marker'
-                : 'Show cluster-marker'}
+                ? "Hide cluster-marker"
+                : "Show cluster-marker"}
             </button>
           </div>
         </div>

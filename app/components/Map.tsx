@@ -12,6 +12,8 @@ import {
 import Pin from "./Pin";
 import type { LayerProps } from "react-map-gl";
 import { Feature } from "geojson";
+import DrawControl, { useMapboxDraw } from "../../hooks/draw-control";
+import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 
 export const clusterLayer: LayerProps = {
   id: "clusters",
@@ -64,6 +66,7 @@ type MapProps = {
   showMarker?: boolean;
   showClusters?: boolean;
   clusterCustomMarkers?: boolean;
+  enableMarker?: boolean;
 };
 
 const Map: React.FC<MapProps> = ({
@@ -71,12 +74,36 @@ const Map: React.FC<MapProps> = ({
   showClusters,
   geoJson,
   clusterCustomMarkers,
+  enableMarker,
 }) => {
+  const [features, setFeatures] = React.useState({});
+
+  const onUpdate = React.useCallback((e) => {
+    setFeatures((currFeatures) => {
+      const newFeatures = { ...currFeatures };
+      for (const f of e.features) {
+        newFeatures[f.id] = f;
+      }
+      return newFeatures;
+    });
+  }, []);
+
+  const onDelete = React.useCallback((e) => {
+    setFeatures((currFeatures) => {
+      const newFeatures = { ...currFeatures };
+      for (const f of e.features) {
+        delete newFeatures[f.id];
+      }
+      return newFeatures;
+    });
+  }, []);
+
   const [markers, setMarkers] = React.useState([
     { longitude: -122.4, latitude: 37.8, id: 1 },
   ]);
 
   const handleClick = (e: mapboxgl.MapLayerMouseEvent) => {
+    if (!enableMarker) return;
     if (!showMarker) return;
     setMarkers((markers) => [
       ...markers,
@@ -130,6 +157,18 @@ const Map: React.FC<MapProps> = ({
       mapStyle="mapbox://styles/mapbox/streets-v9"
       onClick={handleClick}
     >
+      {/* <DrawControl
+        position="bottom-left"
+        displayControlsDefault={false}
+        controls={{
+          polygon: true,
+          trash: true,
+        }}
+        defaultMode="draw_polygon"
+        onCreate={onUpdate}
+        onUpdate={onUpdate}
+        onDelete={onDelete}
+      /> */}
       {geoJson && (
         <Source id="geojson" type="geojson" data={geoJson}>
           <Layer

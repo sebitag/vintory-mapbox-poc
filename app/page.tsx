@@ -12,7 +12,7 @@ import newYork from "../data/new-york.geo.json";
 import miami from "../data/miami.geo.json";
 import palmBeach from "../data/palm-beach.geo.json";
 import sanDiego from "../data/san-diego.geo.json";
-import { useMapboxDraw } from "@/hooks/draw-control";
+import MapboxDraw from "@mapbox/mapbox-gl-draw";
 
 const geojsons = [
   { name: "San Francisco", geojson: sanFrancisco },
@@ -56,15 +56,12 @@ function Home() {
       setDrawMode(e.mode);
     });
 
-    const draw = useMapboxDraw({
+    const draw = new MapboxDraw({
       displayControlsDefault: false,
       controls: {
         polygon: true,
         trash: true,
       },
-      onCreate: (e) => console.log("onCreate", e),
-      onUpdate: (e) => console.log("onUpdate", e),
-      onDelete: (e) => console.log("onDelete", e),
     });
 
     setDraw(draw);
@@ -141,7 +138,7 @@ function Home() {
                     drawMode === "draw_polygon"
                       ? "simple_select"
                       : "draw_polygon";
-                  draw.changeMode(mode as string);
+                  draw?.changeMode(mode as string);
                   setDrawMode(mode);
                 }}
               >
